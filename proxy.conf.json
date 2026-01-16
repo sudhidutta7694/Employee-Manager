@@ -1,0 +1,11 @@
+[
+  {
+    "context": [
+      "/api/EmployeeManagement"
+    ],
+    "target": "https://projectapi.gerasim.in",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+]

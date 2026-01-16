@@ -1,0 +1,155 @@
+.dashboard {
+  color: #e5e7eb;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.dashboard h1 {
+  margin: 0.25rem 0;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #f3f4f6;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #60a5fa;
+}
+
+.muted {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.cards-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(285px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Shared Card Styling */
+.profile-card,
+.stat-card {
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  border-radius: 1rem;
+}
+
+/* Profile Card */
+.profile-card {
+  padding: 1.25rem;
+}
+
+/* >>> FIXED SPACING + ALIGNMENT <<< */
+.profile-card .mat-card-header {
+  display: flex;
+  align-items: center;         /* centers text vertically */
+  gap: 0.75rem;                /* clean horizontal spacing */
+  padding-bottom: 0.8rem;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: #0f172a;
+  flex-shrink: 0;  
+  margin-right: 10px;             /* prevents avatar compression */
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #9ca3af;
+}
+
+.value {
+  font-size: 0.94rem;
+  font-weight: 600;
+  color: #f3f4f6;
+}
+
+/* Stats */
+.stat-card {
+  padding: 1.3rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+.stat-value {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #f9fafb;
+}
+
+.stat-sub {
+  font-size: 0.85rem;
+  color: #9ca3af;
+}
+
+/* Empty State */
+.empty {
+  padding: 1.4rem;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+  border-radius: 0.75rem;
+  text-align: center;
+  color: #9ca3af;
+}
+
+/* Responsive Improvements */
+@media (max-width: 720px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions {
+    justify-content: flex-start;
+  }
+}

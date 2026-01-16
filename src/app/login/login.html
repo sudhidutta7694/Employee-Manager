@@ -1,0 +1,96 @@
+<div class="login-page">
+	<div class="login-overlay"></div>
+
+	<div class="login-container">
+		<div class="brand">
+			<div class="brand-logo">EM</div>
+			<div class="brand-text">
+				<h1 class="brand-title">Employee Manager</h1>
+				<p class="brand-subtitle">Secure access to your workplace dashboard</p>
+			</div>
+		</div>
+
+		<mat-card class="login-card">
+			<form #loginForm="ngForm" (ngSubmit)="onSubmit(loginForm)">
+				<h2 class="login-title">Sign in</h2>
+				<p class="login-description">Use your corporate credentials to continue.</p>
+
+			<mat-form-field appearance="outline" class="form-field">
+				<mat-label>Email</mat-label>
+				<input
+					matInput
+					id="email"
+					name="email"
+					type="email"
+					required
+					[(ngModel)]="email"
+					#emailCtrl="ngModel"
+					autocomplete="email"
+					placeholder="you@company.com"
+				/>
+				<mat-error *ngIf="emailCtrl.invalid && (emailCtrl.dirty || emailCtrl.touched)">
+					A valid email is required.
+				</mat-error>
+			</mat-form-field>
+
+			<mat-form-field appearance="outline" class="form-field">
+				<mat-label>Password</mat-label>
+				<input
+					matInput
+					id="password"
+					name="password"
+					type="password"
+					required
+					minlength="6"
+					[(ngModel)]="password"
+					#passwordCtrl="ngModel"
+					autocomplete="current-password"
+					placeholder="Enter your password"
+				/>
+				<mat-error *ngIf="passwordCtrl.invalid && (passwordCtrl.dirty || passwordCtrl.touched)">
+					Password must be at least 6 characters.
+				</mat-error>
+			</mat-form-field>
+
+			<div class="form-meta">
+				<mat-checkbox name="rememberMe" [(ngModel)]="rememberMe">
+					Remember me
+				</mat-checkbox>
+
+				<button mat-button type="button" class="link-button" (click)="onForgotPassword($event)">
+					Forgot password?
+				</button>
+			</div>
+
+				<button
+					mat-flat-button
+					color="primary"
+					type="submit"
+					class="primary-button"
+					[disabled]="loginForm.invalid || loading"
+				>
+					<span *ngIf="!loading">Sign in</span>
+					<mat-progress-spinner
+						*ngIf="loading"
+						mode="indeterminate"
+						diameter="18"
+						strokeWidth="3"
+					></mat-progress-spinner>
+				</button>
+
+				<p class="form-hint">
+					By signing in, you agree to the company acceptable use policy.
+				</p>
+
+				<p class="form-error" *ngIf="errorMessage">
+					{{ errorMessage }}
+				</p>
+			</form>
+		</mat-card>
+
+		<footer class="login-footer">
+			<span>© {{ currentYear }} Employee Manager. All rights reserved.</span>
+		</footer>
+	</div>
+</div>
+
