@@ -1,4 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -12,6 +13,7 @@ import { selectAuthUser } from '../state/auth.selectors.js';
   imports: [CommonModule, MatCardModule, MatButtonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Dashboard {
 
@@ -19,7 +21,7 @@ export class Dashboard {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
-  user$ = this.store.select(selectAuthUser);
+  readonly user = toSignal(this.store.select(selectAuthUser), { initialValue: null });
 
   logout() {
     this.auth.clearSession();

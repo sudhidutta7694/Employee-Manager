@@ -12,33 +12,35 @@
   </div>
 
   <div class="cards-section">
-    <mat-card class="profile-card" *ngIf="user$ | async as user">
-      <mat-card-header>
-        <div mat-card-avatar class="avatar">{{ user.employeeName.slice(0, 1) || 'U' }}</div>
-        <div class="mt-2">
-          <mat-card-title>{{ user.employeeName || 'User' }}</mat-card-title>
-        </div>
-      </mat-card-header>
+    @if (user(); as user) {
+      <mat-card class="profile-card">
+        <mat-card-header>
+          <div mat-card-avatar class="avatar">{{ user.employeeName.slice(0, 1) || 'U' }}</div>
+          <div class="mt-2">
+            <mat-card-title>{{ user.employeeName || 'User' }}</mat-card-title>
+          </div>
+        </mat-card-header>
 
-      <mat-card-content>
-        <div class="info-row">
-          <span class="label">Role</span>
-          <span class="value">{{ user.role || '—' }}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Department</span>
-          <span class="value">{{ user.deptId || '—' }}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Contact</span>
-          <span class="value">{{ user.contactNo || '—' }}</span>
-        </div>
-        <div class="info-row">
-          <span class="label">Created</span>
-          <span class="value">{{ user.createdDate || '—' }}</span>
-        </div>
-      </mat-card-content>
-    </mat-card>
+        <mat-card-content>
+          <div class="info-row">
+            <span class="label">Role</span>
+            <span class="value">{{ user.role || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Department</span>
+            <span class="value">{{ user.deptId || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Contact</span>
+            <span class="value">{{ user.contactNo || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Created</span>
+            <span class="value">{{ user.createdDate || '—' }}</span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    }
 
     <mat-card class="stat-card">
       <div class="stat-label">Projects</div>
@@ -53,8 +55,10 @@
     </mat-card>
   </div>
 
-  <div class="empty" *ngIf="!(user$ | async)">
-    <p>No user session found. Please log in again.</p>
-    <button mat-raised-button color="primary" (click)="logout()">Go to login</button>
-  </div>
+  @if (!user()) {
+    <div class="empty">
+      <p>No user session found. Please log in again.</p>
+      <button mat-raised-button color="primary" (click)="logout()">Go to login</button>
+    </div>
+  }
 </div>

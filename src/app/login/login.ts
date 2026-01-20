@@ -1,6 +1,6 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -15,11 +15,30 @@ import { z } from 'zod';
 import { AuthService } from '../auth/auth.service';
 import { AuthUser } from '../state/auth.models.js';
 
+type AuthUserPayload = Partial<{
+  employeeId: number;
+  employeeName: string;
+  contactNo: string;
+  emailId: string;
+  deptId: number;
+  role: string;
+  createdDate: string;
+}>;
+
+type ApiLoginResponse = {
+  Message?: string;
+  message?: string;
+  Result?: boolean;
+  result?: boolean;
+  Data?: AuthUserPayload;
+  data?: AuthUserPayload;
+};
+
 @Component({
   selector: 'app-login',
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -29,14 +48,11 @@ import { AuthUser } from '../state/auth.models.js';
   ],
   templateUrl: './login.html',
   styleUrl: './login.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Login {
-
-  email = '';
-  password = '';
-  rememberMe = true;
-  loading = false;
-  errorMessage = '';
+  readonly loading = signal(false);
+  readonly errorMessage = signal('');
   currentYear = new Date().getFullYear();
 
   // Use a relative URL so Angular's dev proxy can avoid browser CORS issues.
@@ -44,52 +60,57 @@ export class Login {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
+  private readonly fb = inject(NonNullableFormBuilder);
+
+  readonly loginForm = this.fb.group({
+    email: this.fb.control('', { validators: [Validators.required, Validators.email] }),
+    password: this.fb.control('', { validators: [Validators.required, Validators.minLength(6)] }),
+    rememberMe: this.fb.control(true),
+  });
 
   private readonly loginSchema = z.object({
     email: z.string().email('Please enter a valid email address'),
     password: z.string().min(1, 'Password is required'),
   });
 
-  onSubmit(form: NgForm) {
-    if (form.invalid || this.loading) {
+  onSubmit() {
+    if (this.loginForm.invalid || this.loading()) {
       return;
     }
 
-    const validation = this.loginSchema.safeParse({ email: this.email, password: this.password });
+    const { email, password, rememberMe } = this.loginForm.getRawValue();
+
+    const validation = this.loginSchema.safeParse({ email, password });
     if (!validation.success) {
-      this.errorMessage = validation.error.issues[0]?.message || 'Please check your credentials.';
+      this.errorMessage.set(validation.error.issues[0]?.message || 'Please check your credentials.');
       return;
     }
 
-    this.errorMessage = '';
-    this.loading = true;
+    this.errorMessage.set('');
+    this.loading.set(true);
 
     // API expects userName + password (see curl example)
     const payload = {
-      userName: this.email,
-      password: this.password,
+      userName: email,
+      password,
     };
 
     this.http
-      .post<{ Message?: string; message?: string; Result?: boolean; result?: boolean; Data?: unknown; data?: unknown }>(
-        this.apiUrl,
-        payload,
-        { withCredentials: true },
-      )
-      .pipe(timeout(10000), finalize(() => (this.loading = false)))
+      .post<ApiLoginResponse>(this.apiUrl, payload, { withCredentials: true })
+      .pipe(timeout(10000), finalize(() => this.loading.set(false)))
       .subscribe({
         next: (response) => {
           const isSuccess = response?.Result === true || response?.result === true;
-          const data: any = response?.Data ?? response?.data;
+          const data: AuthUserPayload | undefined = response?.Data ?? response?.data;
 
           if (isSuccess) {
             console.info('Login succeeded');
             if (data) {
               const user: AuthUser = {
                 employeeId: data.employeeId ?? 0,
-                employeeName: data.employeeName ?? this.email,
+                employeeName: data.employeeName ?? email,
                 contactNo: data.contactNo,
-                emailId: data.emailId ?? this.email,
+                emailId: data.emailId ?? email,
                 deptId: data.deptId,
                 role: data.role,
                 createdDate: data.createdDate,
@@ -99,17 +120,18 @@ export class Login {
             this.router.navigate(['/dashboard']);
           } else {
             const serverMessage = response?.Message || response?.message;
-            this.errorMessage = serverMessage || 'Invalid email or password. Please try again.';
+            this.errorMessage.set(serverMessage || 'Invalid email or password. Please try again.');
           }
         },
         error: (error: unknown) => {
           console.error('Login request failed', error);
 
           if (error instanceof TimeoutError) {
-            this.errorMessage = 'Login request timed out. Please try again.';
+            this.errorMessage.set('Login request timed out. Please try again.');
           } else {
-            this.errorMessage =
-              'Unable to sign in at the moment. Please check your connection and try again.';
+            this.errorMessage.set(
+              'Unable to sign in at the moment. Please check your connection and try again.',
+            );
           }
         },
       });
@@ -118,7 +140,7 @@ export class Login {
   onForgotPassword(event: Event) {
     event.preventDefault();
     // Placeholder for forgot-password flow (dialog, route, etc.)
-    this.errorMessage = 'Please contact your administrator to reset your password.';
+    this.errorMessage.set('Please contact your administrator to reset your password.');
   }
 
 }
