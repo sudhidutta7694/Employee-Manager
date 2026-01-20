@@ -1,32 +1,50 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, inject } from '@angular/core';
+import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
 import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { DashboardStore } from './dashboard.store';
 import { AuthService } from '../auth/auth.service';
-import { selectAuthUser } from '../state/auth.selectors.js';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, MatCardModule, MatButtonModule],
+  standalone: true,
+  imports: [
+    AsyncPipe,
+    DatePipe,
+    MatCardModule,
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
+    MatGridListModule,
+    MatToolbarModule,
+  ],
+  providers: [DashboardStore],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
+  readonly store = inject(DashboardStore);
+  readonly authService = inject(AuthService);
+  readonly router = inject(Router);
 
-  private readonly store = inject(Store);
-  private readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
+  readonly totalEmployee$ = this.store.totalEmployee$;
+  readonly totalProject$ = this.store.totalProject$;
+  readonly recentEmployee$ = this.store.recentEmployee$;
+  readonly loading$ = this.store.loading$;
 
-  readonly user = toSignal(this.store.select(selectAuthUser), { initialValue: null });
+  displayedColumns: string[] = ['name', 'email', 'role', 'joined'];
 
-  logout() {
-    this.auth.clearSession();
-    // Invalidate session cookie on the API if available (not implemented here)
-    this.router.navigate(['/login']);
+  ngOnInit(): void {
+    this.store.getDashboardData();
   }
 
+  logout() {
+    this.authService.clearSession();
+    this.router.navigate(['/login']);
+  }
 }

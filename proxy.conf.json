@@ -1,7 +1,7 @@
 [
   {
     "context": [
-      "/api/EmployeeManagement"
+      "/api"
     ],
     "target": "https://projectapi.gerasim.in",
     "secure": true,

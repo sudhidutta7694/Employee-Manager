@@ -97,11 +97,11 @@ If everything is successful, you should see a similar confirmation message in yo
 ```text
 Watch mode enabled. Watching for file changes...
 NOTE: Raw file sizes do not reflect development server per-request transformations.
-  ➜  Local:   http://localhost:4200/
+  ➜  Local:   http://localhost:4300/
   ➜  press h + enter to show help
 ```
 
-And now you can visit the path in `Local` (e.g., `http://localhost:4200`) to see your application. Happy coding! 🎉
+And now you can visit the path in `Local` (e.g., `http://localhost:4300`) to see your application. Happy coding! 🎉
 
 ### Using AI for Development
 
@@ -11258,7 +11258,7 @@ ng generate component heroes-list
 ng serve
 ```
 
-1. Open a browser to `http://localhost:4200`.
+1. Open a browser to `http://localhost:4300`.
 
    You should see a single web page, consisting of a title and the HTML of your two components.
 
@@ -11343,14 +11343,14 @@ To view the `crisis-list` component, add `crisis-list` to the end of the path in
 For example:
 
 <docs-code language="http">
-http://localhost:4200/crisis-list
+http://localhost:4300/crisis-list
 ```
 Notice that the `crisis-list` component displays.
 Angular is using the route you defined to dynamically load the component.
 You can load the `heroes-list` component the same way:
 
 ```http
-http://localhost:4200/heroes-list
+http://localhost:4300/heroes-list
 ```
 ## Control navigation with UI elements
 
@@ -11446,7 +11446,7 @@ ng generate component page-not-found
 IMPORTANT: Notice that the wildcard route is placed at the end of the array.
 The order of your routes is important, as Angular applies routes in order and uses the first match it finds.
 
-Try navigating to a non-existing route on your application, such as `http://localhost:4200/powers`.
+Try navigating to a non-existing route on your application, such as `http://localhost:4300/powers`.
 This route doesn't match anything defined in your `app.routes.ts` file.
 However, because you defined a wildcard route, the application automatically displays your `PageNotFound` component.
 
@@ -11553,7 +11553,7 @@ With your code in place, you can now test your custom URL matcher.
 ng serve
    ```
 
-1. Open a browser to `http://localhost:4200`.
+1. Open a browser to `http://localhost:4300`.
 
    You should see a single web page, consisting of a sentence that reads `Navigate to my profile`.
 
